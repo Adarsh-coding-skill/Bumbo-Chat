@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bumbo Chat</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- User Agreement Popup -->
+    <div id="agreement-popup" class="popup">
+        <div class="popup-content">
+            <h2>User Agreement</h2>
+            <div class="agreement-terms">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="age-verify">
+                    <label for="age-verify">I confirm that I am at least 18 years old</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="terms-agree">
+                    <label for="terms-agree">I agree to the terms of service and acceptable use policy</label>
+                </div>
+                <div class="terms-text">
+                    <p>By using this service, you agree to:</p>
+                    <ul>
+                        <li>Not share personal information</li>
+                        <li>Not engage in harassment or abusive behavior</li>
+                        <li>Not share inappropriate or explicit content</li>
+                        <li>Not use the service for any illegal activities</li>
+                    </ul>
+                </div>
+                <div class="popup-buttons">
+                    <button id="agree-button" disabled>I Agree</button>
+                    <button id="cancel-button">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="welcome-screen" class="screen">
+            <h1>Bumbo Chat</h1>
+            <div class="interests-container">
+                <div class="match-type-selector">
+                    <label>Match Type:</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="matchType" value="interest" checked>
+                            <span>Interest Based</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="matchType" value="random">
+                            <span>Random</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="tags-input-container">
+                    <div id="tags" class="tags"></div>
+                    <input type="text" id="interest-input" placeholder="Type an interest and press Enter">
+                </div>
+                <button id="start-chat">Start Chatting</button>
+            </div>
+        </div>
+        
+        <div id="chat-screen" class="screen hidden">
+            <div class="chat-header">
+                <h2>Bumbo Chat</h2>
+                <div class="interests-display">
+                    <span>Your interests: </span>
+                    <div id="current-interests" class="tags"></div>
+                </div>
+                <button id="disconnect">Disconnect (Press ESC)</button>
+            </div>
+            <div id="messages" class="messages"></div>
+            <div class="input-container">
+                <input type="text" id="message-input" placeholder="Type your message...">
+                <button id="send-button">Send</button>
+            </div>
+        </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html> 

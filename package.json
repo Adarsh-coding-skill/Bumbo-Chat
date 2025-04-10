@@ -1,0 +1,47 @@
+{
+  "name": "bumbochat",
+  "version": "1.0.0",
+  "description": "BumboChat - A real-time anonymous chat application with interest-based matching",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "jest",
+    "lint": "eslint .",
+    "build": "echo 'No build step required for this project'",
+    "prestart": "npm run lint",
+    "postinstall": "npm run build"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2",
+    "dotenv": "^16.3.1",
+    "helmet": "^7.1.0",
+    "compression": "^1.7.4",
+    "express-rate-limit": "^7.1.5",
+    "cors": "^2.8.5",
+    "morgan": "^1.10.0",
+    "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2",
+    "eslint": "^8.56.0",
+    "jest": "^29.7.0"
+  },
+  "keywords": [
+    "bumbochat",
+    "chat",
+    "anonymous",
+    "socket.io",
+    "real-time"
+  ],
+  "author": "BumboChat Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/bumbochat"
+  }
+} 
