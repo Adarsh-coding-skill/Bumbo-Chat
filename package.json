@@ -8,9 +8,7 @@
     "dev": "nodemon app.js",
     "test": "jest",
     "lint": "eslint .",
-    "build": "echo 'No build step required for this project'",
-    "prestart": "npm run lint",
-    "postinstall": "npm run build"
+    "build": "echo 'No build step required for this project'"
   },
   "engines": {
     "node": ">=14.0.0"
@@ -39,9 +37,5 @@
     "real-time"
   ],
   "author": "BumboChat Team",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/your-username/bumbochat"
-  }
+  "license": "MIT"
 } 

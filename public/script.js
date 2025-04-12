@@ -50,6 +50,20 @@ function updateAgreeButton() {
 // Event Listeners
 startChatButton.addEventListener('click', showAgreementPopup);
 sendButton.addEventListener('click', sendMessage);
+disconnectButton.addEventListener('click', () => {
+    if (currentPartner) {
+        socket.emit('disconnectPartner', { partnerId: currentPartner });
+        addMessage('You have disconnected from your partner.', 'system');
+        currentPartner = null;
+        
+        // Return to welcome screen after disconnecting
+        setTimeout(() => {
+            welcomeScreen.classList.remove('hidden');
+            chatScreen.classList.add('hidden');
+            messagesContainer.innerHTML = '';
+        }, 2000);
+    }
+});
 messageInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
         sendMessage();

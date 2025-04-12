@@ -2,7 +2,16 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
-const io = require('socket.io')(http);
+const io = require('socket.io')(http, {
+    cors: {
+        origin: process.env.NODE_ENV === 'production'
+            ? ['https://bumbochat.vercel.app', 'https://www.bumbochat.vercel.app']
+            : ['http://localhost:3000', 'http://127.0.0.1:3000'],
+        methods: ['GET', 'POST'],
+        credentials: true
+    },
+    transports: ['websocket', 'polling']
+});
 const helmet = require('helmet');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
@@ -41,14 +50,14 @@ app.use(helmet({
             scriptSrc: ["'self'", "'unsafe-inline'"],
             styleSrc: ["'self'", "'unsafe-inline'"],
             imgSrc: ["'self'", "data:", "https:"],
-            connectSrc: ["'self'", "wss:", "ws:", "http://localhost:3000"]
+            connectSrc: ["'self'", "wss:", "ws:", "http://localhost:3000", "https://bumbochat.vercel.app", "https://www.bumbochat.vercel.app"]
         }
     }
 }));
 app.use(compression());
 app.use(cors({
-    origin: process.env.NODE_ENV === 'production' 
-        ? ['https://bumbochat.com', 'https://www.bumbochat.com'] 
+    origin: process.env.NODE_ENV === 'production'
+        ? ['https://bumbochat.vercel.app', 'https://www.bumbochat.vercel.app']
         : ['http://localhost:3000', 'http://127.0.0.1:3000'],
     methods: ['GET', 'POST'],
     credentials: true
@@ -386,4 +395,7 @@ function findDifferentInterestMatch(userId, interests) {
 const PORT = process.env.PORT || 3000;
 http.listen(PORT, () => {
     logger.info(`${APP_NAME} v${APP_VERSION} is running on port ${PORT} in ${process.env.NODE_ENV} mode`);
-}); 
+});
+
+// Export for Vercel
+module.exports = http; 
