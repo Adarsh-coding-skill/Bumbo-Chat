@@ -24,6 +24,27 @@ const termsAgreeCheckbox = document.getElementById('terms-agree');
 const agreeButton = document.getElementById('agree-button');
 const cancelButton = document.getElementById('cancel-button');
 
+// Match Type Handling
+function handleMatchTypeChange(e) {
+    const selectedType = e.target.value;
+    const tagsContainer = document.querySelector('.tags-input-container');
+    
+    if (selectedType === 'random') {
+        tagsContainer.style.opacity = '0.5';
+        tagsContainer.style.pointerEvents = 'none';
+        interestInput.disabled = true;
+    } else {
+        tagsContainer.style.opacity = '1';
+        tagsContainer.style.pointerEvents = 'auto';
+        interestInput.disabled = false;
+    }
+}
+
+// Add event listeners to radio buttons
+matchTypeRadios.forEach(radio => {
+    radio.addEventListener('change', handleMatchTypeChange);
+});
+
 // Event Listeners for Agreement
 function showAgreementPopup() {
     agreementPopup.classList.add('show');

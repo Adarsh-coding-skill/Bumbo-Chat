@@ -111,7 +111,7 @@ body::before {
     flex-wrap: wrap;
     gap: 5px;
     background: rgba(0, 0, 0, 0.8);
-    transition: all 0.3s ease;
+    transition: opacity 0.3s ease, pointer-events 0.3s ease;
 }
 
 .tags-input-container:focus-within {
@@ -646,38 +646,43 @@ button:hover {
     gap: 12px;
     cursor: pointer;
     transition: all 0.3s ease;
-    padding: 10px;
+    padding: 15px;
     border-radius: 10px;
     background: rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(138, 43, 226, 0.2);
+    position: relative;
 }
 
 .radio-option:hover {
     background: rgba(138, 43, 226, 0.1);
     transform: translateX(5px);
+    border-color: var(--primary);
 }
 
 .radio-option input[type="radio"] {
-    display: none;
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
 }
 
-.radio-option .radio-custom {
-    width: 20px;
-    height: 20px;
+.radio-custom {
+    width: 24px;
+    height: 24px;
     border: 2px solid var(--primary);
     border-radius: 50%;
     position: relative;
     transition: all 0.3s ease;
+    background: transparent;
 }
 
-.radio-option .radio-custom::before {
+.radio-custom::before {
     content: '';
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(0);
-    width: 10px;
-    height: 10px;
+    width: 12px;
+    height: 12px;
     background: var(--primary);
     border-radius: 50%;
     transition: all 0.3s ease;
@@ -689,7 +694,7 @@ button:hover {
 
 .radio-option input[type="radio"]:checked + .radio-custom {
     border-color: var(--accent);
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
 }
 
 .radio-option label {
@@ -697,6 +702,7 @@ button:hover {
     color: var(--text);
     cursor: pointer;
     transition: all 0.3s ease;
+    flex: 1;
 }
 
 .radio-option input[type="radio"]:checked ~ label {

@@ -44,14 +44,16 @@
                 <div class="match-type-selector">
                     <label>Match Type:</label>
                     <div class="radio-group">
-                        <label class="radio-label">
-                            <input type="radio" name="matchType" value="interest" checked>
-                            <span>Interest Based</span>
-                        </label>
-                        <label class="radio-label">
-                            <input type="radio" name="matchType" value="random">
-                            <span>Random</span>
-                        </label>
+                        <div class="radio-option">
+                            <input type="radio" id="interest-match" name="matchType" value="interest" checked>
+                            <div class="radio-custom"></div>
+                            <label for="interest-match">Interest Based</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="random-match" name="matchType" value="random">
+                            <div class="radio-custom"></div>
+                            <label for="random-match">Random</label>
+                        </div>
                     </div>
                 </div>
                 <div class="tags-input-container">
