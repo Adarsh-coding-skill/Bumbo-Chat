@@ -5,13 +5,21 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http, {
     cors: {
         origin: process.env.NODE_ENV === 'production'
-            ? ['https://bumbochat.vercel.app', 'https://www.bumbochat.vercel.app']
+            ? ['https://bumbo-chat.vercel.app', 'https://www.bumbo-chat.vercel.app']
             : ['http://localhost:3000', 'http://127.0.0.1:3000'],
         methods: ['GET', 'POST'],
         credentials: true
     },
-    transports: ['websocket', 'polling']
+    transports: ['websocket', 'polling'],
+    pingTimeout: 60000,
+    pingInterval: 25000,
+    upgradeTimeout: 30000,
+    maxHttpBufferSize: 1e8
 });
+
+// Increase server timeout
+http.timeout = 60000; // 60 seconds
+
 const helmet = require('helmet');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
@@ -22,6 +30,7 @@ const winston = require('winston');
 // App configuration
 const APP_NAME = 'BumboChat';
 const APP_VERSION = '1.0.0';
+const PORT = process.env.PORT || 3000;
 
 // Configure Winston logger
 const logger = winston.createLogger({
@@ -42,6 +51,19 @@ if (process.env.NODE_ENV !== 'production') {
     }));
 }
 
+// Error handling for uncaught exceptions
+process.on('uncaughtException', (error) => {
+    logger.error('Uncaught Exception:', error);
+    // Don't exit the process in production, just log it
+    if (process.env.NODE_ENV !== 'production') {
+        process.exit(1);
+    }
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
 // Security middleware
 app.use(helmet({
     contentSecurityPolicy: {
@@ -50,34 +72,41 @@ app.use(helmet({
             scriptSrc: ["'self'", "'unsafe-inline'"],
             styleSrc: ["'self'", "'unsafe-inline'"],
             imgSrc: ["'self'", "data:", "https:"],
-            connectSrc: ["'self'", "wss:", "ws:", "http://localhost:3000", "https://bumbochat.vercel.app", "https://www.bumbochat.vercel.app"]
+            connectSrc: ["'self'", "wss:", "ws:", "http://localhost:3000", "https://bumbo-chat.vercel.app", "https://www.bumbo-chat.vercel.app"]
         }
     }
 }));
-app.use(compression());
+
+// Enable CORS with more specific options
 app.use(cors({
     origin: process.env.NODE_ENV === 'production'
-        ? ['https://bumbochat.vercel.app', 'https://www.bumbochat.vercel.app']
+        ? ['https://bumbo-chat.vercel.app', 'https://www.bumbo-chat.vercel.app']
         : ['http://localhost:3000', 'http://127.0.0.1:3000'],
     methods: ['GET', 'POST'],
-    credentials: true
+    credentials: true,
+    maxAge: 86400 // 24 hours
 }));
 
-// Rate limiting
+app.use(compression());
+
+// Rate limiting with higher limits for production
 const limiter = rateLimit({
-    windowMs: process.env.RATE_LIMIT_WINDOW * 60 * 1000, // 15 minutes
-    max: process.env.RATE_LIMIT_MAX, // limit each IP to 100 requests per windowMs
-    message: 'Too many requests from this IP, please try again later.'
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: process.env.NODE_ENV === 'production' ? 200 : 100, // limit each IP
+    message: 'Too many requests from this IP, please try again later.',
+    standardHeaders: true,
+    legacyHeaders: false
 });
 app.use(limiter);
 
 // Logging middleware
 app.use(morgan('combined', { stream: { write: message => logger.info(message.trim()) } }));
 
-// Static files
+// Static files with caching
 app.use(express.static('public', {
-    maxAge: '1d',
+    maxAge: process.env.NODE_ENV === 'production' ? '1d' : 0,
     etag: true,
+    lastModified: true,
     setHeaders: (res, path) => {
         if (path.endsWith('.html')) {
             res.setHeader('Cache-Control', 'no-cache');
@@ -101,20 +130,34 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Health check endpoint
+// Health check endpoint with detailed status
 app.get('/health', (req, res) => {
     res.json({
         status: 'ok',
         app: APP_NAME,
         version: APP_VERSION,
-        environment: process.env.NODE_ENV
+        environment: process.env.NODE_ENV,
+        uptime: process.uptime(),
+        timestamp: new Date().toISOString()
     });
 });
 
 io.on('connection', (socket) => {
-    logger.info('A user connected', { 
-        socketId: socket.id,
-        app: APP_NAME 
+    logger.info('A user connected', { socketId: socket.id, app: APP_NAME });
+
+    // Add error handling for socket
+    socket.on('error', (error) => {
+        logger.error('Socket Error:', error);
+        socket.emit('error', 'An error occurred. Please try reconnecting.');
+    });
+
+    // Add reconnection handling
+    socket.on('reconnect', (attemptNumber) => {
+        logger.info('Client reconnected', { socketId: socket.id, attemptNumber });
+    });
+
+    socket.on('reconnect_error', (error) => {
+        logger.error('Reconnection Error:', error);
     });
 
     socket.on('join', (data) => {
@@ -391,10 +434,20 @@ function findDifferentInterestMatch(userId, interests) {
     return null;
 }
 
-// Start server
-const PORT = process.env.PORT || 3000;
-http.listen(PORT, () => {
+// Start server with error handling
+const server = http.listen(PORT, () => {
     logger.info(`${APP_NAME} v${APP_VERSION} is running on port ${PORT} in ${process.env.NODE_ENV} mode`);
+}).on('error', (error) => {
+    logger.error('Server Error:', error);
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+    logger.info('SIGTERM received. Performing graceful shutdown...');
+    server.close(() => {
+        logger.info('Server closed. Exiting process.');
+        process.exit(0);
+    });
 });
 
 // Export for Vercel
