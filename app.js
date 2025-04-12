@@ -5,7 +5,7 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http, {
     cors: {
         origin: process.env.NODE_ENV === 'production'
-            ? ['https://bumbo-chat.vercel.app', 'https://www.bumbo-chat.vercel.app']
+            ? ['https://bumbo-chat.vercel.app', 'https://www.bumbo-chat.vercel.app', 'https://bumbo-chat.onrender.com']
             : ['http://localhost:3000', 'http://127.0.0.1:3000'],
         methods: ['GET', 'POST'],
         credentials: true
@@ -72,7 +72,7 @@ app.use(helmet({
             scriptSrc: ["'self'", "'unsafe-inline'"],
             styleSrc: ["'self'", "'unsafe-inline'"],
             imgSrc: ["'self'", "data:", "https:"],
-            connectSrc: ["'self'", "wss:", "ws:", "http://localhost:3000", "https://bumbo-chat.vercel.app", "https://www.bumbo-chat.vercel.app"]
+            connectSrc: ["'self'", "wss:", "ws:", "http://localhost:3000", "https://bumbo-chat.vercel.app", "https://www.bumbo-chat.vercel.app", "https://bumbo-chat.onrender.com"]
         }
     }
 }));
@@ -80,7 +80,7 @@ app.use(helmet({
 // Enable CORS with more specific options
 app.use(cors({
     origin: process.env.NODE_ENV === 'production'
-        ? ['https://bumbo-chat.vercel.app', 'https://www.bumbo-chat.vercel.app']
+        ? ['https://bumbo-chat.vercel.app', 'https://www.bumbo-chat.vercel.app', 'https://bumbo-chat.onrender.com']
         : ['http://localhost:3000', 'http://127.0.0.1:3000'],
     methods: ['GET', 'POST'],
     credentials: true,

@@ -93,12 +93,16 @@ disconnectButton.addEventListener('click', () => {
         addMessage('You have disconnected from your partner.', 'system');
         currentPartner = null;
         
-        // Return to welcome screen after disconnecting
-        setTimeout(() => {
-            welcomeScreen.classList.remove('hidden');
-            chatScreen.classList.add('hidden');
-            messagesContainer.innerHTML = '';
-        }, 2000);
+        // Clear messages and show searching message
+        messagesContainer.innerHTML = '';
+        addMessage('🔍 Finding a new stranger...', 'system');
+        
+        // Emit event to find new partner
+        const selectedMatchType = document.querySelector('input[name="matchType"]:checked').value;
+        socket.emit('join', { 
+            interests: Array.from(userInterests),
+            matchType: selectedMatchType
+        });
     }
 });
 
