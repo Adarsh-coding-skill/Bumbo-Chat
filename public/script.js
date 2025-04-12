@@ -232,16 +232,19 @@ socket.on('matched', (data) => {
 });
 
 socket.on('noMatchFound', () => {
-    messagesContainer.innerHTML = '';
     addMessage('😔 No stranger found. Please try again later. 😔', 'system');
     currentPartner = null;
     
-    // Reset the UI
+    // Wait a few seconds and try again automatically
     setTimeout(() => {
-        welcomeScreen.classList.remove('hidden');
-        chatScreen.classList.add('hidden');
         messagesContainer.innerHTML = '';
-    }, 2000);
+        addMessage('🔍 Trying to find a new stranger...', 'system');
+        const selectedMatchType = document.querySelector('input[name="matchType"]:checked').value;
+        socket.emit('join', { 
+            interests: Array.from(userInterests),
+            matchType: selectedMatchType
+        });
+    }, 3000);
 });
 
 socket.on('message', (data) => {
@@ -251,8 +254,17 @@ socket.on('message', (data) => {
 socket.on('partnerDisconnected', () => {
     addMessage('👋 Your partner has disconnected.', 'system');
     currentPartner = null;
+    
+    // Clear messages and start finding a new partner
     messagesContainer.innerHTML = '';
-    addMessage('💫 Stranger disconnected ...Press ESC to find a new stranger... 💫', 'system');
+    addMessage('🔍 Finding a new stranger...', 'system');
+    
+    // Emit event to find new partner with same preferences
+    const selectedMatchType = document.querySelector('input[name="matchType"]:checked').value;
+    socket.emit('join', { 
+        interests: Array.from(userInterests),
+        matchType: selectedMatchType
+    });
 });
 
 socket.on('newPartnerFound', (data) => {
