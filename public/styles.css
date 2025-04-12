@@ -471,7 +471,7 @@ button:hover {
     }
 
     #disconnect .mobile-text {
-        display: inline;
+        display: inline-block;
     }
 
     #disconnect .desktop-text {
@@ -757,12 +757,14 @@ input, textarea {
     white-space: nowrap;
 }
 
+/* Hide mobile text by default (desktop view) */
 #disconnect .mobile-text {
     display: none;
 }
 
+/* Show desktop text by default */
 #disconnect .desktop-text {
-    display: inline;
+    display: inline-block;
 }
 
 #disconnect:hover {
