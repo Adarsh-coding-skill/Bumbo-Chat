@@ -25,24 +25,32 @@ const agreeButton = document.getElementById('agree-button');
 const cancelButton = document.getElementById('cancel-button');
 
 // Event Listeners for Agreement
-ageVerifyCheckbox.addEventListener('change', updateAgreeButton);
-termsAgreeCheckbox.addEventListener('change', updateAgreeButton);
+function showAgreementPopup() {
+    agreementPopup.classList.add('show');
+}
 
-agreeButton.addEventListener('click', () => {
-    agreementPopup.style.display = 'none';
-    proceedWithChat();
-});
-
-cancelButton.addEventListener('click', () => {
-    agreementPopup.style.display = 'none';
+function hideAgreementPopup() {
+    agreementPopup.classList.remove('show');
     ageVerifyCheckbox.checked = false;
     termsAgreeCheckbox.checked = false;
     updateAgreeButton();
-});
+}
 
 function updateAgreeButton() {
     agreeButton.disabled = !(ageVerifyCheckbox.checked && termsAgreeCheckbox.checked);
 }
+
+ageVerifyCheckbox.addEventListener('change', updateAgreeButton);
+termsAgreeCheckbox.addEventListener('change', updateAgreeButton);
+
+agreeButton.addEventListener('click', () => {
+    if (!agreeButton.disabled) {
+        hideAgreementPopup();
+        proceedWithChat();
+    }
+});
+
+cancelButton.addEventListener('click', hideAgreementPopup);
 
 // Event Listeners
 startChatButton.addEventListener('click', () => {
@@ -53,8 +61,7 @@ startChatButton.addEventListener('click', () => {
         return;
     }
 
-    // Show agreement popup
-    agreementPopup.style.display = 'flex';
+    showAgreementPopup();
 });
 
 sendButton.addEventListener('click', sendMessage);
