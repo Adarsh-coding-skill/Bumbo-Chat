@@ -469,6 +469,14 @@ button:hover {
         font-size: 16px;
         margin-left: auto;
     }
+
+    #disconnect .mobile-text {
+        display: inline;
+    }
+
+    #disconnect .desktop-text {
+        display: none;
+    }
 }
 
 @media (max-width: 480px) {
@@ -747,6 +755,14 @@ input, textarea {
     box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
     max-width: 120px;
     white-space: nowrap;
+}
+
+#disconnect .mobile-text {
+    display: none;
+}
+
+#disconnect .desktop-text {
+    display: inline;
 }
 
 #disconnect:hover {
