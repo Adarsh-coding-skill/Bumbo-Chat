@@ -470,12 +470,13 @@ button:hover {
         margin-left: auto;
     }
 
-    #disconnect .mobile-text {
-        display: inline-block;
+    /* Switch visibility for mobile */
+    .mobile-text {
+        display: inline-block !important;
     }
 
-    #disconnect .desktop-text {
-        display: none;
+    .desktop-text {
+        display: none !important;
     }
 }
 
@@ -755,15 +756,16 @@ input, textarea {
     box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
     max-width: 120px;
     white-space: nowrap;
+    position: relative;
 }
 
-/* Hide mobile text by default (desktop view) */
-#disconnect .mobile-text {
-    display: none;
+/* Mobile text is always hidden by default (desktop view) */
+.mobile-text {
+    display: none !important;
 }
 
-/* Show desktop text by default */
-#disconnect .desktop-text {
+/* Desktop text is visible by default */
+.desktop-text {
     display: inline-block;
 }
 
