@@ -481,24 +481,22 @@ button:hover {
 
 /* Popup Styles */
 .popup {
-    display: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.9);
-    z-index: 1000;
-    display: flex;
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
     justify-content: center;
     align-items: center;
-    backdrop-filter: blur(5px);
-    animation: fadeIn 0.3s ease;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+.popup[style*="display: flex"] {
+    opacity: 1;
 }
 
 .popup-content {

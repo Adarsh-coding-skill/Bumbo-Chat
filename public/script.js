@@ -24,9 +24,6 @@ const termsAgreeCheckbox = document.getElementById('terms-agree');
 const agreeButton = document.getElementById('agree-button');
 const cancelButton = document.getElementById('cancel-button');
 
-// Hide agreement popup initially
-agreementPopup.style.display = 'none';
-
 // Event Listeners for Agreement
 ageVerifyCheckbox.addEventListener('change', updateAgreeButton);
 termsAgreeCheckbox.addEventListener('change', updateAgreeButton);
@@ -48,8 +45,20 @@ function updateAgreeButton() {
 }
 
 // Event Listeners
-startChatButton.addEventListener('click', showAgreementPopup);
+startChatButton.addEventListener('click', () => {
+    const selectedMatchType = document.querySelector('input[name="matchType"]:checked').value;
+    
+    if (selectedMatchType === 'interest' && userInterests.size === 0) {
+        alert('Please add at least one interest for interest-based matching');
+        return;
+    }
+
+    // Show agreement popup
+    agreementPopup.style.display = 'flex';
+});
+
 sendButton.addEventListener('click', sendMessage);
+
 disconnectButton.addEventListener('click', () => {
     if (currentPartner) {
         socket.emit('disconnectPartner', { partnerId: currentPartner });
@@ -64,6 +73,7 @@ disconnectButton.addEventListener('click', () => {
         }, 2000);
     }
 });
+
 messageInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
         sendMessage();
@@ -117,17 +127,6 @@ function removeTag(tag) {
             break;
         }
     }
-}
-
-function showAgreementPopup() {
-    const selectedMatchType = document.querySelector('input[name="matchType"]:checked').value;
-    
-    if (selectedMatchType === 'interest' && userInterests.size === 0) {
-        alert('Please add at least one interest for interest-based matching');
-        return;
-    }
-
-    agreementPopup.style.display = 'flex';
 }
 
 function proceedWithChat() {
