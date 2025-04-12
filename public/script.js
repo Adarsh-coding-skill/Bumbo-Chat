@@ -87,23 +87,51 @@ startChatButton.addEventListener('click', () => {
 
 sendButton.addEventListener('click', sendMessage);
 
-disconnectButton.addEventListener('click', () => {
+// Function to handle finding a new partner
+function findNewPartner() {
     if (currentPartner) {
         socket.emit('disconnectPartner', { partnerId: currentPartner });
-        addMessage('You have disconnected from your partner.', 'system');
-        currentPartner = null;
-        
-        // Clear messages and show searching message
-        messagesContainer.innerHTML = '';
-        addMessage('🔍 Finding a new stranger...', 'system');
-        
-        // Emit event to find new partner
-        const selectedMatchType = document.querySelector('input[name="matchType"]:checked').value;
-        socket.emit('join', { 
-            interests: Array.from(userInterests),
-            matchType: selectedMatchType
-        });
     }
+    currentPartner = null;
+    
+    // Clear messages and show searching message
+    messagesContainer.innerHTML = '';
+    addMessage('🔍 Finding a new stranger...', 'system');
+    
+    // Emit event to find new partner with same preferences
+    const selectedMatchType = document.querySelector('input[name="matchType"]:checked').value;
+    socket.emit('join', { 
+        interests: Array.from(userInterests),
+        matchType: selectedMatchType
+    });
+}
+
+// Update disconnect button handler
+disconnectButton.addEventListener('click', findNewPartner);
+
+// Update ESC key handler
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        findNewPartner();
+    }
+});
+
+// Update the partner disconnected handler
+socket.on('partnerDisconnected', () => {
+    addMessage('👋 Your partner has disconnected.', 'system');
+    currentPartner = null;
+    
+    // Automatically find a new partner
+    findNewPartner();
+});
+
+// Update the no match found handler
+socket.on('noMatchFound', () => {
+    addMessage('😔 No stranger found. Please try again later. 😔', 'system');
+    currentPartner = null;
+    
+    // Wait a few seconds and try again automatically
+    setTimeout(findNewPartner, 3000);
 });
 
 messageInput.addEventListener('keypress', (e) => {
@@ -117,23 +145,6 @@ interestInput.addEventListener('keypress', (e) => {
         e.preventDefault();
         addTag(e.target.value.trim());
         e.target.value = '';
-    }
-});
-
-// ESC key handling
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        if (currentPartner) {
-            // If connected, disconnect from current partner
-            socket.emit('disconnectPartner', { partnerId: currentPartner });
-            addMessage('You have disconnected from your partner.', 'system');
-            currentPartner = null;
-        } else {
-            // If not connected, find a new partner
-            messagesContainer.innerHTML = '';
-            addMessage('Finding a stranger...', 'system');
-            socket.emit('findNewPartner');
-        }
     }
 });
 
@@ -229,42 +240,6 @@ socket.on('matched', (data) => {
     }
     
     addMessage(matchMessage, 'system');
-});
-
-socket.on('noMatchFound', () => {
-    addMessage('😔 No stranger found. Please try again later. 😔', 'system');
-    currentPartner = null;
-    
-    // Wait a few seconds and try again automatically
-    setTimeout(() => {
-        messagesContainer.innerHTML = '';
-        addMessage('🔍 Trying to find a new stranger...', 'system');
-        const selectedMatchType = document.querySelector('input[name="matchType"]:checked').value;
-        socket.emit('join', { 
-            interests: Array.from(userInterests),
-            matchType: selectedMatchType
-        });
-    }, 3000);
-});
-
-socket.on('message', (data) => {
-    addMessage(data.message, 'received');
-});
-
-socket.on('partnerDisconnected', () => {
-    addMessage('👋 Your partner has disconnected.', 'system');
-    currentPartner = null;
-    
-    // Clear messages and start finding a new partner
-    messagesContainer.innerHTML = '';
-    addMessage('🔍 Finding a new stranger...', 'system');
-    
-    // Emit event to find new partner with same preferences
-    const selectedMatchType = document.querySelector('input[name="matchType"]:checked').value;
-    socket.emit('join', { 
-        interests: Array.from(userInterests),
-        matchType: selectedMatchType
-    });
 });
 
 socket.on('newPartnerFound', (data) => {

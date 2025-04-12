@@ -463,6 +463,12 @@ button:hover {
     .message {
         max-width: 85%;
     }
+
+    #disconnect {
+        padding: 10px 25px;
+        font-size: 16px;
+        margin-left: auto;
+    }
 }
 
 @media (max-width: 480px) {
@@ -731,4 +737,20 @@ h1, h2, h3, h4, h5, h6 {
 input, textarea {
     font-family: 'Poppins', sans-serif;
     font-weight: 300;
+}
+
+#disconnect {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+    border-radius: 20px;
+    padding: 8px 20px;
+    font-weight: 500;
+    box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
+    max-width: 120px;
+    white-space: nowrap;
+}
+
+#disconnect:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 255, 255, 0.4);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
 } 
