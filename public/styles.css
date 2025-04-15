@@ -433,7 +433,17 @@ button:hover {
     }
 
     .messages {
-        padding-bottom: 70px;
+        padding: 15px;
+        padding-bottom: 80px;
+        width: 100%;
+    }
+
+    .message {
+        max-width: 90%;
+        padding: 12px 18px;
+        margin-bottom: 12px;
+        font-size: 16px;
+        line-height: 1.4;
     }
 
     .input-container {
@@ -442,41 +452,49 @@ button:hover {
         left: 0;
         right: 0;
         background: var(--background);
-        padding: 10px;
+        padding: 12px;
         border-top: 1px solid rgba(138, 43, 226, 0.2);
         z-index: 100;
         backdrop-filter: blur(10px);
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    #message-input {
+        flex: 1;
+        padding: 12px 16px;
+        font-size: 16px;
+        height: 48px;
+        border-radius: 24px;
+    }
+
+    #send-button {
+        padding: 12px 20px;
+        height: 48px;
+        border-radius: 24px;
+        font-size: 16px;
+        white-space: nowrap;
     }
 
     .chat-header {
-        padding: 15px;
+        padding: 12px;
+        position: sticky;
+        top: 0;
+        z-index: 10;
     }
 
     .chat-header h2 {
-        font-size: 1rem;
+        font-size: 1.1rem;
     }
 
     .interests-display {
-        font-size: 0.8rem;
-    }
-
-    .message {
-        max-width: 85%;
+        font-size: 0.9rem;
     }
 
     #disconnect {
-        padding: 10px 25px;
-        font-size: 16px;
-        margin-left: auto;
-    }
-
-    /* Switch visibility for mobile */
-    .mobile-text {
-        display: inline-block !important;
-    }
-
-    .desktop-text {
-        display: none !important;
+        padding: 8px 16px;
+        font-size: 14px;
     }
 }
 
@@ -502,7 +520,22 @@ button:hover {
 
     .message {
         max-width: 95%;
-        font-size: 0.8rem;
+        padding: 14px 20px;
+        margin-bottom: 14px;
+    }
+
+    .input-container {
+        padding: 10px;
+    }
+
+    #message-input {
+        height: 44px;
+        padding: 10px 14px;
+    }
+
+    #send-button {
+        height: 44px;
+        padding: 10px 16px;
     }
 }
 

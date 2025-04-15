@@ -254,4 +254,8 @@ socket.on('newPartnerFound', (data) => {
     }
     
     addMessage(matchMessage, 'system');
+});
+
+socket.on('message', (data) => {
+    addMessage(data.message, 'received');
 }); 
